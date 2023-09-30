@@ -2,25 +2,24 @@
 #define __PLAYER__
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <list>
 class Player : public sf::Drawable
 {
 	public:
-		Player(float l_1, float w_1, float l_2, float w_2);
-		void PlayerUpdate();
-		void PlayerEvent();
+		Player(sf::Vector2f hitbox_size, sf::Vector2f bullet_size);
+		void Update();
+		void Event();
 	private:
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
 		{
-			target.draw(hit_box, states);
+			target.draw(hitbox, states);
 			for(auto it=bullet_list.begin(); it!=bullet_list.end(); it++)
 				target.draw(*it, states);
 		}
-		sf::RectangleShape hit_box;
-		const float PLAYER_LENGTH;
-		const float PLAYER_WIDTH;
-		const float BULLET_LENGTH;
-		const float BULLET_WIDTH;
+		sf::RectangleShape hitbox;
+		const sf::Vector2f HITBOX_SIZE;
+		const sf::Vector2f BULLET_SIZE;
 		std::list<sf::RectangleShape> bullet_list;
 };
 
