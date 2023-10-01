@@ -9,7 +9,6 @@ class Player : public sf::Drawable
 	public:
 		Player(sf::Vector2f hitbox_size, sf::Vector2f bullet_size);
 		void Update();
-		void Event();
 	private:
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
 		{
