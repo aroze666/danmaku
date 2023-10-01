@@ -12,6 +12,8 @@ int main (int argc, char *argv[]) {
 	    if(event.type == sf::Event::Closed)
 		window.close();
 	}
+	game.GeneralEvent();
+	game.CollisionEvent();
 	game.Update();
 	window.clear();
 	window.draw(game);
