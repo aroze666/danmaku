@@ -1,9 +1,20 @@
 #include "Player.hpp"
-Player::Player(sf::Vector2f hitbox_size, sf::Vector2f bullet_size) : HITBOX_SIZE(hitbox_size), BULLET_SIZE(bullet_size)
+Player::Player()
 {
-    this->hitbox.setPosition(0,0);
-    this->hitbox.setSize(HITBOX_SIZE);
-    this->hitbox.setFillColor(sf::Color::White);
+    this->hitbox.setSize({30,30});
+    this->bullet_size = {5,5};
+}
+void Player::SetHitboxSize(sf::Vector2f size)
+{
+    this->hitbox.setSize(size);
+}
+void Player::SetBulletSize(sf::Vector2f size)
+{
+    this->bullet_size = size;
+}
+void Player::SetPosition(sf::Vector2f position)
+{
+    this->hitbox.setPosition(position);
 }
 bool is_hit(const sf::RectangleShape& bullet)
 {
@@ -23,7 +34,7 @@ void Player::Update()
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
     {
 	sf::RectangleShape new_bullet;
-	new_bullet.setSize(BULLET_SIZE);
+	new_bullet.setSize(bullet_size);
 	new_bullet.setFillColor(sf::Color::Red);
 	new_bullet.setPosition({player_position.x+(hitbox.getSize().x/2)-new_bullet.getSize().x/2,player_position.y});
 	bullet_list.push_back(new_bullet);

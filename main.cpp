@@ -3,7 +3,7 @@
 int main (int argc, char *argv[]) {
     sf::RenderWindow window(sf::VideoMode(800,800), "SFML works!");
     window.setFramerateLimit(60);
-    Game game;
+    Game game(window);
     while(window.isOpen())
     {
 	sf::Event event;

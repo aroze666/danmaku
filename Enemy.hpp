@@ -6,18 +6,19 @@
 #include <time.h>
 class Enemy : public sf::Drawable
 {
-public:
-    Enemy(sf::Vector2f HITBOX_SIZE, sf::Vector2f BULLET_SIZE);
-    void Update();
-private:
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
-    {
-        target.draw(hitbox, states);
-    }
-    sf::RectangleShape hitbox;
-    sf::Vector2f HITBOX_SIZE;
-    sf::Vector2f BULLET_SIZE;
-    sf::Vector2f velocity;
+    public:
+        Enemy();
+        void Update();
+        void SetMovementRange(sf::Vector2f range);
+    private:
+        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
+        {
+            target.draw(hitbox, states);
+        }
+        sf::RectangleShape hitbox;
+        sf::Vector2f bullet_size;
+        sf::Vector2f velocity;
+        sf::Vector2f movement_range;
 };
 
 #endif

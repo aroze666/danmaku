@@ -7,8 +7,11 @@
 class Player : public sf::Drawable
 {
 	public:
-		Player(sf::Vector2f hitbox_size, sf::Vector2f bullet_size);
+		Player();
 		void Update();
+		void SetHitboxSize(sf::Vector2f size);
+		void SetBulletSize(sf::Vector2f size);
+		void SetPosition(sf::Vector2f position);
 	private:
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
 		{
@@ -17,8 +20,7 @@ class Player : public sf::Drawable
 				target.draw(*it, states);
 		}
 		sf::RectangleShape hitbox;
-		const sf::Vector2f HITBOX_SIZE;
-		const sf::Vector2f BULLET_SIZE;
+		sf::Vector2f bullet_size;
 		std::list<sf::RectangleShape> bullet_list;
 };
 
