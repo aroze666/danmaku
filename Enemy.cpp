@@ -19,14 +19,14 @@ sf::RectangleShape Enemy::GetHitbox()
 }
 void Enemy::Event()
 {
-    if(hitbox.getPosition().x > movement_range.x - hitbox.getSize().x)
-	this->velocity = {-10,this->velocity.y};
-    if(hitbox.getPosition().x <= 0)
-	this->velocity = {10,this->velocity.y};
-    if(hitbox.getPosition().y > movement_range.y - hitbox.getSize().y)
-	this->velocity = {this->velocity.x,-10};
-    if(hitbox.getPosition().y <= 0)
-	this->velocity = {this->velocity.x,10};
+    if(hitbox.getPosition().x > movement_range.x - hitbox.getSize().x && this->velocity.x > 0)
+	this->velocity = {-1*this->velocity.x,this->velocity.y};
+    if(hitbox.getPosition().x <= 0 && this->velocity.x < 0)
+	this->velocity = {-1*this->velocity.x,this->velocity.y};
+    if(hitbox.getPosition().y > movement_range.y - hitbox.getSize().y && this->velocity.y > 0)
+	this->velocity = {this->velocity.x,-1*this->velocity.y};
+    if(hitbox.getPosition().y <= 0 && this->velocity.y < 0)
+	this->velocity = {this->velocity.x,-1*this->velocity.y};
 
 }
 void Enemy::Update()
