@@ -9,7 +9,7 @@ Game::Game(sf::RenderWindow &window)
     player.SetVelocity({3,3});
     Enemy x;
     x.SetMovementRange(window_size);
-    x.SetVelocity({-20,-20});
+    x.SetVelocity({-2,-2});
     enemy_list.push_back(x);
 }
 
@@ -17,11 +17,24 @@ void Game::GeneralEvent()
 {
     player.Event();
     for(auto enemy = enemy_list.begin(); enemy!=enemy_list.end(); enemy++)
+    {
 	enemy->Event();
+    }
+}
+bool HitEnemy(Enemy enemy)
+{
+    return enemy.IsHit();
 }
 void Game::CollisionEvent()
 {
-
+    enemy_list.remove_if(HitEnemy);
+    for(auto enemy = enemy_list.begin(); enemy!=enemy_list.end(); enemy++)
+    {
+	if(player.IsBulletHit(enemy->GetHitbox()))
+	{
+	    enemy->SetHit(true);
+	}
+    }
 }
 
 void Game::Update()

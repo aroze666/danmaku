@@ -6,7 +6,8 @@ Player::Player()
     this->bullet_size = {5,5};
 }
 void Player::SetMovementRange(sf::Vector2f range)
-{ this->movement_range = range;
+{
+    this->movement_range = range;
 }
 void Player::SetHitboxSize(sf::Vector2f size)
 {
@@ -28,9 +29,17 @@ sf::RectangleShape Player::GetHitbox()
 {
     return hitbox;
 }
-bool is_hit(const sf::RectangleShape& bullet)
+bool touch_border(const sf::RectangleShape& bullet)
 {
     return bullet.getPosition().y < 0;
+}
+bool Player::IsBulletHit(const sf::Shape &object)
+{
+    bool hit = false;
+    for(auto bullet=bullet_list.begin(); bullet!=bullet_list.end(); bullet++)
+	if(object.getGlobalBounds().intersects(bullet->getGlobalBounds()))
+	    hit  = true;
+    return hit;
 }
 void Player::Event()
 {
@@ -69,10 +78,9 @@ void Player::Update()
 {
     this->hitbox.setPosition({this->hitbox.getPosition() + this->velocity});
     this->velocity = {0,0};
-    bullet_list.remove_if(is_hit);
+    bullet_list.remove_if(touch_border);
     for(std::list<sf::RectangleShape>::iterator it=bullet_list.begin(); it!=bullet_list.end(); it++)
-	it->setPosition({it->getPosition().x,it->getPosition().y-80});
-
+	it->setPosition({it->getPosition().x,it->getPosition().y-40});
 }
 
 

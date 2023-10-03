@@ -4,6 +4,7 @@ Enemy::Enemy()
 {   
     this->hitbox.setFillColor(sf::Color::Green);
     this->hitbox.setSize({30,30});
+    this->is_hit = false;
 }
 void Enemy::SetMovementRange(sf::Vector2f range)
 {

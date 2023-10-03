@@ -15,6 +15,7 @@ class Player : public sf::Drawable
         void SetBulletSize(sf::Vector2f size);
         void SetPosition(sf::Vector2f position);
         void SetVelocity(sf::Vector2f velocity);
+        bool IsBulletHit(const sf::Shape &object);
         sf::Vector2f GetVelocity(){return velocity;}
         sf::RectangleShape GetHitbox();
     private:

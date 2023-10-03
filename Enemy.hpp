@@ -15,11 +15,14 @@ class Enemy : public sf::Drawable
         sf::RectangleShape GetHitbox();
         void SetVelocity(sf::Vector2f velocity);
         sf::Vector2f GetVelcoity(){return velocity;}
+        void SetHit(bool is_hit){this->is_hit = is_hit;}
+        bool IsHit(){return is_hit;}
     private:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
         {
             target.draw(hitbox, states);
         }
+        bool is_hit;
         sf::RectangleShape hitbox;
         sf::Vector2f bullet_size;
         sf::Vector2f velocity;
