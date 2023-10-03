@@ -72,11 +72,11 @@ void Player::Update()
     if(hitbox.getPosition().x <= 0)
 	SetPosition({0,this->hitbox.getPosition().y});
     if(hitbox.getPosition().x >= movement_range.x - hitbox.getSize().x)
-	SetPosition({movement_range.x,this->hitbox.getPosition().y});
+	SetPosition({movement_range.x - this->hitbox.getSize().x, this->hitbox.getPosition().y});
     if(hitbox.getPosition().y <= 0)
 	SetPosition({this->hitbox.getPosition().x, 0});
     if(hitbox.getPosition().y >= movement_range.y - hitbox.getSize().y)
-	SetPosition({this->hitbox.getPosition().x, movement_range.y});
+	SetPosition({this->hitbox.getPosition().x, movement_range.y - this->hitbox.getSize().y});
 
     this->velocity = {0,0};
     bullet_list.remove_if(touch_border);
