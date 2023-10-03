@@ -6,9 +6,10 @@ Game::Game(sf::RenderWindow &window)
     this->window_size.y = window.getSize().y;
     player.SetPosition({500,300});
     player.SetMovementRange(window_size);
+    player.SetVelocity({3,3});
     Enemy x;
     x.SetMovementRange(window_size);
-    x.SetVelocity({-30,-90});
+    x.SetVelocity({-20,-20});
     enemy_list.push_back(x);
 }
 

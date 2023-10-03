@@ -27,6 +27,7 @@ class Player : public sf::Drawable
         sf::RectangleShape hitbox;
         sf::Vector2f bullet_size;
         std::list<sf::RectangleShape> bullet_list;
+        sf::Vector2f initial_velocity;
         sf::Vector2f velocity;
         sf::Vector2f movement_range;
 };
