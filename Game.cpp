@@ -7,12 +7,16 @@ Game::Game(sf::RenderWindow &window)
     player.SetPosition({500,300});
     player.SetMovementRange(window_size);
     player.SetVelocity({3,3});
-    Enemy x;
-    x.SetMovementRange(window_size);
-    x.SetVelocity({-2,-2});
-    enemy_list.push_back(x);
-}
+   }
 
+void Game::create_Enemy()
+{
+    Enemy new_enemy;
+    new_enemy.SetMovementRange(window_size);
+    new_enemy.SetPosition({player.GetHitbox().getPosition().x, player.GetHitbox().getPosition().y - 100});
+    new_enemy.SetVelocity({-2,-2});
+    enemy_list.push_back(new_enemy);
+}
 void Game::GeneralEvent()
 {
     player.Event();
@@ -20,14 +24,16 @@ void Game::GeneralEvent()
     {
 	enemy->Event();
     }
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::C))
+	create_Enemy();
 }
-bool HitEnemy(Enemy enemy)
+bool hitEnemy(Enemy enemy)
 {
     return enemy.IsHit();
 }
 void Game::CollisionEvent()
 {
-    enemy_list.remove_if(HitEnemy);
+    enemy_list.remove_if(hitEnemy);
     for(auto enemy = enemy_list.begin(); enemy!=enemy_list.end(); enemy++)
     {
 	if(player.IsBulletHit(enemy->GetHitbox()))

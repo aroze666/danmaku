@@ -12,6 +12,7 @@ class Enemy : public sf::Drawable
         void Update();
         void Event();
         void SetMovementRange(sf::Vector2f range);
+        void SetPosition(sf::Vector2f position){this->hitbox.setPosition(position);}
         sf::RectangleShape GetHitbox();
         void SetVelocity(sf::Vector2f velocity);
         sf::Vector2f GetVelcoity(){return velocity;}

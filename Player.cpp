@@ -57,15 +57,7 @@ void Player::Event()
 	this->velocity.x /= 2;
 	this->velocity.y /= 2;
     }
-    if(hitbox.getPosition().x <= 0)
-	this->velocity = {this->initial_velocity.x, this->velocity.y};
-    else if(hitbox.getPosition().x >= movement_range.x - hitbox.getSize().x)
-	this->velocity = {-this->initial_velocity.x, this->velocity.y};
-    else if(hitbox.getPosition().y <= 0)
-	this->velocity = {this->velocity.x, this->initial_velocity.y};
-    else if(hitbox.getPosition().y >= movement_range.y - hitbox.getSize().y)
-	this->velocity = {this->velocity.x, -this->initial_velocity.y};
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
     {
 	sf::RectangleShape new_bullet;
 	new_bullet.setSize(bullet_size);
@@ -77,10 +69,19 @@ void Player::Event()
 void Player::Update()
 {
     this->hitbox.setPosition({this->hitbox.getPosition() + this->velocity});
+    if(hitbox.getPosition().x <= 0)
+	SetPosition({0,this->hitbox.getPosition().y});
+    if(hitbox.getPosition().x >= movement_range.x - hitbox.getSize().x)
+	SetPosition({movement_range.x,this->hitbox.getPosition().y});
+    if(hitbox.getPosition().y <= 0)
+	SetPosition({this->hitbox.getPosition().x, 0});
+    if(hitbox.getPosition().y >= movement_range.y - hitbox.getSize().y)
+	SetPosition({this->hitbox.getPosition().x, movement_range.y});
+
     this->velocity = {0,0};
     bullet_list.remove_if(touch_border);
-    for(std::list<sf::RectangleShape>::iterator it=bullet_list.begin(); it!=bullet_list.end(); it++)
-	it->setPosition({it->getPosition().x,it->getPosition().y-40});
+    for(auto bullet=bullet_list.begin(); bullet!=bullet_list.end(); bullet++)
+	bullet->setPosition({bullet->getPosition().x,bullet->getPosition().y-40});
 }
 
 

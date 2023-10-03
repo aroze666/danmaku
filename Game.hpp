@@ -27,5 +27,6 @@ class Game : public sf::Drawable
         sf::Vector2f window_size;
         std::list<Enemy> enemy_list;
         bool is_Collide(const sf::Shape &a, const sf::Shape &b);
+        void create_Enemy();
 };
 #endif
