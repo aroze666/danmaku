@@ -26,7 +26,6 @@ void Game::GeneralEvent()
     {
 	enemy->Event();
     }
-    std::cout << (int)time%1000 <<std::endl;
     if((int)time % 1000 < 10)
 	create_Enemy();
 }

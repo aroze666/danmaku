@@ -64,6 +64,8 @@ void Player::Event()
 	new_bullet.setFillColor(sf::Color::Red);
 	new_bullet.setPosition({player_position.x+(hitbox.getSize().x/2)-new_bullet.getSize().x/2,player_position.y});
 	bullet_list.push_back(new_bullet);
+	this->velocity.x /= 3;
+	this->velocity.y /= 3;
     }
 }
 void Player::Update()
