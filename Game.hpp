@@ -25,7 +25,8 @@ class Game : public sf::Drawable
         }
         Player player;
         Scene scene;
-        sf::Clock clock;
+        sf::Clock enemy_respawn_clock;
+        int respawn_time;
         sf::Vector2f window_size;
         std::list<Enemy> enemy_list;
         bool is_Collide(const sf::Shape &a, const sf::Shape &b);

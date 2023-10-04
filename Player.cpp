@@ -29,17 +29,15 @@ sf::RectangleShape Player::GetHitbox()
 {
     return hitbox;
 }
-bool touch_border(const sf::RectangleShape& bullet)
-{
-    return bullet.getPosition().y < 0;
-}
 bool Player::IsBulletHit(const sf::Shape &object)
 {
-    bool hit = false;
     for(auto bullet=bullet_list.begin(); bullet!=bullet_list.end(); bullet++)
 	if(object.getGlobalBounds().intersects(bullet->getGlobalBounds()))
-	    hit  = true;
-    return hit;
+	{
+	    bullet->Hit();
+	    return true;
+	}
+    return false;
 }
 void Player::Event()
 {
@@ -59,7 +57,7 @@ void Player::Event()
     }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
     {
-	sf::RectangleShape new_bullet;
+	Bullet new_bullet;
 	new_bullet.setSize(bullet_size);
 	new_bullet.setFillColor(sf::Color::Red);
 	new_bullet.setPosition({player_position.x+(hitbox.getSize().x/2)-new_bullet.getSize().x/2,player_position.y});
@@ -67,6 +65,10 @@ void Player::Event()
 	this->velocity.x /= 3;
 	this->velocity.y /= 3;
     }
+}
+bool bulletHit(Bullet &bullet)
+{
+    return bullet.GetHitStatus() || bullet.getPosition().y < 0;
 }
 void Player::Update()
 {
@@ -81,7 +83,7 @@ void Player::Update()
 	SetPosition({this->hitbox.getPosition().x, movement_range.y - this->hitbox.getSize().y});
 
     this->velocity = {0,0};
-    bullet_list.remove_if(touch_border);
+    bullet_list.remove_if(bulletHit);
     for(auto bullet=bullet_list.begin(); bullet!=bullet_list.end(); bullet++)
 	bullet->setPosition({bullet->getPosition().x,bullet->getPosition().y-40});
 }
