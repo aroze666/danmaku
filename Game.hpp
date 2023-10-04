@@ -5,6 +5,7 @@
 #include "Scene.hpp"
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
+#include <cmath>
 #include <list>
 
 class Game : public sf::Drawable
@@ -24,6 +25,7 @@ class Game : public sf::Drawable
         }
         Player player;
         Scene scene;
+        sf::Clock clock;
         sf::Vector2f window_size;
         std::list<Enemy> enemy_list;
         bool is_Collide(const sf::Shape &a, const sf::Shape &b);

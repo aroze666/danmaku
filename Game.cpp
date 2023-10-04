@@ -13,18 +13,21 @@ void Game::create_Enemy()
 {
     Enemy new_enemy;
     new_enemy.SetMovementRange(window_size);
-    new_enemy.SetPosition({player.GetHitbox().getPosition().x, player.GetHitbox().getPosition().y - 100});
-    new_enemy.SetVelocity({-2,-2});
+    new_enemy.SetPosition({window_size.x/2, 100});
+    new_enemy.SetVelocity({(float)(rand()%4-2),(float)(rand()%4-2)});
     enemy_list.push_back(new_enemy);
 }
 void Game::GeneralEvent()
 {
+    srand((int)clock.getElapsedTime().asMicroseconds());
+    float time = clock.getElapsedTime().asMilliseconds();
     player.Event();
     for(auto enemy = enemy_list.begin(); enemy!=enemy_list.end(); enemy++)
     {
 	enemy->Event();
     }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::C))
+    std::cout << (int)time%1000 <<std::endl;
+    if((int)time % 1000 < 10)
 	create_Enemy();
 }
 bool hitEnemy(Enemy enemy)
