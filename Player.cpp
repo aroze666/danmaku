@@ -1,14 +1,12 @@
 #include "Player.hpp"
+#include <SFML/System/Vector2.hpp>
 Player::Player()
 {
+    this->moving = false;
     this->hitbox.setSize({30,30});
-    this->initial_velocity = {4,4};
+    this->initial_velocity = {10,10};
     this->bullet_size = {5,5};
     this->hitbox.setFillColor(sf::Color::Blue);
-}
-void Player::SetMovementRange(sf::Vector2f range)
-{
-    this->movement_range = range;
 }
 void Player::SetHitboxSize(sf::Vector2f size)
 {
@@ -45,13 +43,16 @@ void Player::CreateBullet()
     Bullet new_bullet;
     new_bullet.setSize(bullet_size);
     new_bullet.setFillColor(sf::Color::Cyan);
-    new_bullet.setPosition({hitbox.getPosition().x+(hitbox.getSize().x/2)-new_bullet.getSize().x/2,hitbox.getPosition().y});
+    new_bullet.setPosition({hitbox.getPosition().x+(hitbox.getSize().x/2)-new_bullet.getSize().x/2,hitbox.getPosition().y+(hitbox.getSize().y/2)-new_bullet.getSize().y/2});
+    sf::Vector2f mouse_pos = sf::Vector2f(sf::Mouse::getPosition(*window));
+    sf::Vector2f aim_direction = mouse_pos - hitbox.getPosition();
+    aim_direction = aim_direction / (float)std::sqrt(std::pow(aim_direction.x,2) + std::pow(aim_direction.y,2));
+    new_bullet.SetVelocity(aim_direction);
     bullet_list.push_back(new_bullet);
 }
 
 void Player::Event()
 {
-    bool moving = false;
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
 	moving = true;
@@ -77,7 +78,7 @@ void Player::Event()
 	this->velocity.x /= 2;
 	this->velocity.y /= 2;
     }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
     {
 	CreateBullet();
 	this->velocity.x /= 2;
@@ -86,10 +87,17 @@ void Player::Event()
     if(moving)
     {
 	this->hitbox.setPosition({this->hitbox.getPosition() + this->velocity});
-	this->velocity.x = 0;
-	this->velocity.y = 0;
-	moving = false;
     }
+    if(this->velocity.x > 0)
+	this->velocity.x--;
+    if(this->velocity.x < 0)
+	this->velocity.x++;
+    if(this->velocity.y > 0)
+	this->velocity.y--;
+    if(this->velocity.y < 0)
+	this->velocity.y++;
+    if(this->velocity.x == 0 && this->velocity.y == 0)
+	moving = false;
     if(hitbox.getPosition().x <= 0)
 	SetPosition({0,this->hitbox.getPosition().y});
     if(hitbox.getPosition().x >= movement_range.x - hitbox.getSize().x)
@@ -105,11 +113,12 @@ bool bulletHit(Bullet &bullet)
 }
 void Player::Update()
 {
+
     bullet_list.remove_if(bulletHit);
     for(auto bullet=bullet_list.begin(); bullet!=bullet_list.end(); bullet++)
     {
 	bullet->AddTime();
-	bullet->setPosition({bullet->getPosition().x,bullet->getPosition().y-bullet->GetTime()});
+	bullet->move(bullet->GetVelocity()*bullet->GetTime());
 
     }
 }

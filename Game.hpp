@@ -25,6 +25,7 @@ class Game : public sf::Drawable
         }
         Player player;
         Scene scene;
+        sf::RenderWindow window;
         sf::Clock enemy_respawn_clock;
         int respawn_time;
         sf::Vector2f window_size;

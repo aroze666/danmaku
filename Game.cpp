@@ -1,12 +1,12 @@
 #include "Game.hpp"
 
-Game::Game(sf::RenderWindow &window)
+Game::Game(sf::RenderWindow &window) 
 {
     srand(time(0));
-    this->window_size.x = window.getSize().x;
-    this->window_size.y = window.getSize().y;
+    window_size = sf::Vector2f(window.getSize());
     player.SetPosition({500,300});
     player.SetMovementRange(window_size);
+    player.SetWindow(&window);
     player.SetVelocity({3,3});
     this->respawn_time = 3000;
 }
@@ -35,8 +35,6 @@ void Game::GeneralEvent()
     if(time > respawn_time)
     {
 	create_Enemy();
-	if(respawn_time > 200)
-	    respawn_time -= 100;
 	enemy_respawn_clock = sf::Clock();
     }
 }
@@ -57,13 +55,13 @@ void Game::CollisionEvent()
 		enemy->SetVelocity(enemy_2->GetVelcoity());
 		enemy_2->SetVelocity(enemy_velocity);
 	    }
-	if(is_Collide(player.GetHitbox(), enemy->GetHitbox()))
+	if(is_Collide(player.GetHitbox(), enemy->GetHitbox()) || player.IsBulletHit(enemy->GetHitbox()))
 	{
-	    player.SetVelocity(enemy->GetVelcoity());
 	    enemy->SetHit(true);
+	    if(respawn_time > 600)
+		respawn_time -= 100;
+		
 	}
-	if(player.IsBulletHit(enemy->GetHitbox()))
-	    enemy->SetHit(true);
     }
 }
 

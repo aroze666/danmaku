@@ -5,6 +5,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <list>
 #include <iostream>
+#include <cmath>
 #include "Bullet.hpp"
 class Player : public sf::Drawable
 {
@@ -12,12 +13,13 @@ class Player : public sf::Drawable
         Player();
         void Update();
         void Event();
-        void SetMovementRange(sf::Vector2f range);
         void SetHitboxSize(sf::Vector2f size);
         void SetBulletSize(sf::Vector2f size);
         void SetPosition(sf::Vector2f position);
         void SetVelocity(sf::Vector2f velocity);
         bool IsBulletHit(const sf::Shape &object);
+        void SetWindow(sf::RenderWindow *window){this->window = window;}
+        void SetMovementRange(sf::Vector2f range){movement_range = range;}
         sf::Vector2f GetVelocity(){return velocity;}
         sf::RectangleShape GetHitbox();
     private:
@@ -34,7 +36,8 @@ class Player : public sf::Drawable
         sf::Vector2f initial_velocity;
         sf::Vector2f velocity;
         sf::Vector2f movement_range;
-        sf::Mouse cursor;
+        sf::RenderWindow *window;
+        bool moving;
 };
 
 
