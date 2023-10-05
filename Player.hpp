@@ -29,7 +29,7 @@ class Player : public sf::Drawable
             for(auto it=bullet_list.begin(); it!=bullet_list.end(); it++)
                 target.draw(*it, states);
         }
-        void CreateBullet();
+        sf::Vector2f terminal_velocity;
         sf::RectangleShape hitbox;
         sf::Vector2f bullet_size;
         std::list<Bullet> bullet_list;

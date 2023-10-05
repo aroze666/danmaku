@@ -1,10 +1,12 @@
 #include "Player.hpp"
-#include <SFML/System/Vector2.hpp>
+#include <cmath>
 Player::Player()
 {
     this->moving = false;
+    this->terminal_velocity = {10,10};
     this->hitbox.setSize({30,30});
-    this->initial_velocity = {10,10};
+    this->initial_velocity = {1,1};
+    this->velocity = initial_velocity;
     this->bullet_size = {5,5};
     this->hitbox.setFillColor(sf::Color::Blue);
 }
@@ -38,65 +40,64 @@ bool Player::IsBulletHit(const sf::Shape &object)
 	}
     return false;
 }
-void Player::CreateBullet()
-{
-    Bullet new_bullet;
-    new_bullet.setSize(bullet_size);
-    new_bullet.setFillColor(sf::Color::Cyan);
-    new_bullet.setPosition({hitbox.getPosition().x+(hitbox.getSize().x/2)-new_bullet.getSize().x/2,hitbox.getPosition().y+(hitbox.getSize().y/2)-new_bullet.getSize().y/2});
-    sf::Vector2f mouse_pos = sf::Vector2f(sf::Mouse::getPosition(*window));
-    sf::Vector2f aim_direction = mouse_pos - hitbox.getPosition();
-    aim_direction = aim_direction / (float)std::sqrt(std::pow(aim_direction.x,2) + std::pow(aim_direction.y,2));
-    new_bullet.SetVelocity(aim_direction);
-    bullet_list.push_back(new_bullet);
-}
 
 void Player::Event()
 {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
 	moving = true;
-	this->velocity.x = this->initial_velocity.x;
+	if(this->velocity.x <= terminal_velocity.x)
+	    this->velocity.x += this->initial_velocity.x;
     }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
 	moving = true;
-	this->velocity.x = -this->initial_velocity.x;
+	if(this->velocity.x >= -terminal_velocity.x)
+	    this->velocity.x += -this->initial_velocity.x;
     }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
 	moving = true;
-	this->velocity.y = -this->initial_velocity.y;
+	if(this->velocity.y >= -terminal_velocity.y)
+	    this->velocity.y += -this->initial_velocity.y;
     }
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
 	moving = true;
-	this->velocity.y = this->initial_velocity.y;
-    }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-    {
-	this->velocity.x /= 2;
-	this->velocity.y /= 2;
+	if(this->velocity.y <= terminal_velocity.y)
+	    this->velocity.y += this->initial_velocity.y;
     }
     if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
     {
-	CreateBullet();
-	this->velocity.x /= 2;
-	this->velocity.y /= 2;
+	moving = true;
+	Bullet new_bullet;
+	new_bullet.setSize(bullet_size);
+	new_bullet.setFillColor(sf::Color::Cyan);
+	new_bullet.setPosition({hitbox.getPosition().x+(hitbox.getSize().x/2)-new_bullet.getSize().x/2,hitbox.getPosition().y+(hitbox.getSize().y/2)-new_bullet.getSize().y/2});
+	sf::Vector2f mouse_pos = sf::Vector2f(sf::Mouse::getPosition(*window));
+	sf::Vector2f aim_direction = mouse_pos - hitbox.getPosition();
+	aim_direction = aim_direction / (float)std::sqrt(std::pow(aim_direction.x,2) + std::pow(aim_direction.y,2));
+	new_bullet.SetVelocity(aim_direction);
+	bullet_list.push_back(new_bullet);
+	this->velocity += -aim_direction*2.f;
+	if(std::abs(this->velocity.x) >= terminal_velocity.x)
+	    this->velocity.x -= -aim_direction.x*2.f;
+	if(std::abs(this->velocity.y) >= terminal_velocity.y)
+	    this->velocity.y -= -aim_direction.y*2.f;
     }
     if(moving)
     {
 	this->hitbox.setPosition({this->hitbox.getPosition() + this->velocity});
     }
-    if(this->velocity.x > 0)
-	this->velocity.x--;
-    if(this->velocity.x < 0)
-	this->velocity.x++;
-    if(this->velocity.y > 0)
-	this->velocity.y--;
-    if(this->velocity.y < 0)
-	this->velocity.y++;
-    if(this->velocity.x == 0 && this->velocity.y == 0)
+    if(std::floor(this->velocity.x) > 0)
+	this->velocity.x-=0.1;
+    if(std::ceil(this->velocity.x) < 0)
+	this->velocity.x+=0.1;
+    if(std::floor(this->velocity.y) > 0)
+	this->velocity.y-=0.1;
+    if(std::ceil(this->velocity.y) < 0)
+	this->velocity.y+=0.1;
+    if((std::floor(this->velocity.x) == 0 || std::ceil(this->velocity.x) == 0 ) && (std::floor(this->velocity.y) == 0 || std::ceil(this->velocity.y) == 0))
 	moving = false;
     if(hitbox.getPosition().x <= 0)
 	SetPosition({0,this->hitbox.getPosition().y});
@@ -122,5 +123,4 @@ void Player::Update()
 
     }
 }
-
 
