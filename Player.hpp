@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <list>
+#include <iostream>
 #include "Bullet.hpp"
 class Player : public sf::Drawable
 {
@@ -26,12 +27,14 @@ class Player : public sf::Drawable
             for(auto it=bullet_list.begin(); it!=bullet_list.end(); it++)
                 target.draw(*it, states);
         }
+        void CreateBullet();
         sf::RectangleShape hitbox;
         sf::Vector2f bullet_size;
         std::list<Bullet> bullet_list;
         sf::Vector2f initial_velocity;
         sf::Vector2f velocity;
         sf::Vector2f movement_range;
+        sf::Mouse cursor;
 };
 
 

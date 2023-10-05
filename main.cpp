@@ -15,7 +15,7 @@ int main (int argc, char *argv[]) {
 	game.GeneralEvent();
 	game.CollisionEvent();
 	game.Update();
-	window.clear(sf::Color::Blue);
+	window.clear();
 	window.draw(game);
 	window.display();
     }
