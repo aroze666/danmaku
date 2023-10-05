@@ -19,10 +19,10 @@ void Game::create_Enemy()
     int x_velocity = rand() % 4 - 2;
     int y_velocity = rand() % 4 - 2;
     if(x_velocity != 0 && y_velocity != 0)
+    {
 	new_enemy.SetVelocity({(float)x_velocity,(float)y_velocity});
-    else
-	new_enemy.SetVelocity({0,-5});
-    enemy_list.push_back(new_enemy);
+	enemy_list.push_back(new_enemy);
+    }
 }
 void Game::GeneralEvent()
 {
@@ -35,7 +35,7 @@ void Game::GeneralEvent()
     if(time > respawn_time)
     {
 	create_Enemy();
-	if(respawn_time > 100)
+	if(respawn_time > 200)
 	    respawn_time -= 100;
 	enemy_respawn_clock = sf::Clock();
     }
@@ -49,10 +49,21 @@ void Game::CollisionEvent()
     enemy_list.remove_if(hitEnemy);
     for(auto enemy = enemy_list.begin(); enemy!=enemy_list.end(); enemy++)
     {
-	if(player.IsBulletHit(enemy->GetHitbox()))
+	for(auto enemy_2 = std::next(enemy,1); enemy_2!=enemy_list.end(); enemy_2++)
+	    if(is_Collide(enemy->GetHitbox(), enemy_2->GetHitbox()))
+	    {
+		sf::Vector2f enemy_velocity;
+		enemy_velocity = enemy->GetVelcoity();
+		enemy->SetVelocity(enemy_2->GetVelcoity());
+		enemy_2->SetVelocity(enemy_velocity);
+	    }
+	if(is_Collide(player.GetHitbox(), enemy->GetHitbox()))
 	{
+	    player.SetVelocity(enemy->GetVelcoity());
 	    enemy->SetHit(true);
 	}
+	if(player.IsBulletHit(enemy->GetHitbox()))
+	    enemy->SetHit(true);
     }
 }
 
