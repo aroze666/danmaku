@@ -4,6 +4,7 @@ Player::Player()
     this->hitbox.setSize({30,30});
     this->initial_velocity = {4,4};
     this->bullet_size = {5,5};
+    this->hitbox.setFillColor(sf::Color::Blue);
 }
 void Player::SetMovementRange(sf::Vector2f range)
 {
@@ -43,7 +44,7 @@ void Player::CreateBullet()
 {
     Bullet new_bullet;
     new_bullet.setSize(bullet_size);
-    new_bullet.setFillColor(sf::Color::Red);
+    new_bullet.setFillColor(sf::Color::Cyan);
     new_bullet.setPosition({hitbox.getPosition().x+(hitbox.getSize().x/2)-new_bullet.getSize().x/2,hitbox.getPosition().y});
     bullet_list.push_back(new_bullet);
 }
@@ -106,7 +107,11 @@ void Player::Update()
 {
     bullet_list.remove_if(bulletHit);
     for(auto bullet=bullet_list.begin(); bullet!=bullet_list.end(); bullet++)
-	bullet->setPosition({bullet->getPosition().x,bullet->getPosition().y-40});
+    {
+	bullet->AddTime();
+	bullet->setPosition({bullet->getPosition().x,bullet->getPosition().y-bullet->GetTime()});
+
+    }
 }
 
 

@@ -2,7 +2,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 Enemy::Enemy()
 {   
-    this->hitbox.setFillColor(sf::Color::Green);
+    this->hitbox.setFillColor(sf::Color::Red);
     this->hitbox.setSize({30,30});
     this->is_hit = false;
 }

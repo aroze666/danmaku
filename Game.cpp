@@ -9,7 +9,7 @@ Game::Game(sf::RenderWindow &window)
     player.SetMovementRange(window_size);
     player.SetVelocity({3,3});
     this->respawn_time = 3000;
-   }
+}
 
 void Game::create_Enemy()
 {
