@@ -40,7 +40,7 @@ class Player : public sf::Drawable
         sf::Vector2f movement_range;
         sf::RenderWindow *window;
         sf::CircleShape crosshair;
-        float firing_rate;
+        float firing_cooldown;
         sf::Clock firing_counter;
         bool moving;
 };

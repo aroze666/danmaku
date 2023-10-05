@@ -5,11 +5,11 @@ Player::Player()
     this->moving = false;
     this->terminal_velocity = {10,10};
     this->hitbox.setSize({30,30});
-    this->initial_velocity = {5,5};
+    this->initial_velocity = {2,2};
     this->velocity = initial_velocity;
     this->bullet_size = {5,5};
     this->hitbox.setFillColor(sf::Color::Blue);
-    this->firing_rate = 100;
+    this->firing_cooldown = 100;
     this->crosshair.setFillColor(sf::Color::White);
     this->crosshair.setRadius(10);
 }
@@ -70,10 +70,22 @@ void Player::Event()
 	if(this->velocity.y <= terminal_velocity.y)
 	    this->velocity.y += std::abs(initial_velocity.y);
     }
+
+    if(velocity.x > 0)
+	velocity.x-=0.5;
+    if(velocity.x < 0)
+	velocity.x+=0.5;
+    if(velocity.y > 0)
+	velocity.y-=0.5;
+    if(velocity.y < 0)
+	velocity.y+=0.5;
+    if(velocity.x == 0 && velocity.y == 0)
+	moving = false;
+
     if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
     {
 	float time = firing_counter.getElapsedTime().asMilliseconds();
-	if(time > firing_rate)
+	if(time > firing_cooldown)
 	{
 	    Bullet new_bullet;
 	    new_bullet.setSize(bullet_size);
@@ -89,6 +101,7 @@ void Player::Event()
 	    else
 		aim_offset = -0.05*(std::abs(this->velocity.x) + std::abs(this->velocity.y));
 	    if(moving){
+		//inaccurate
 		if(aim_direction.x < 0 && aim_direction.y < 0)
 		    new_bullet.SetVelocity({aim_direction.x + aim_offset, aim_direction.y - aim_offset});
 		else if(aim_direction.x > 0 && aim_direction.y > 0)
@@ -96,8 +109,13 @@ void Player::Event()
 		else
 		new_bullet.SetVelocity({aim_direction.x + aim_offset, aim_direction.y + aim_offset});
 	    }else
+	    {	
+		//accurate
 		new_bullet.SetVelocity(aim_direction);
+	    }
 	    bullet_list.push_back(new_bullet);
+
+	    //recoil
 	    // moving = true;
 	    // this->velocity += -aim_direction*2.f;
 	    // if(std::abs(this->velocity.x) >= terminal_velocity.x)
@@ -107,13 +125,11 @@ void Player::Event()
 	    firing_counter = sf::Clock();
 	}
     }
-    // std::cout << velocity.x << " " << velocity.y << "\n";
     if(moving)
     {
 	this->hitbox.setPosition({this->hitbox.getPosition() + this->velocity});
-	velocity = {0,0};
-	moving = false;
     }
+
     if(hitbox.getPosition().x <= 0)
 	SetPosition({0,this->hitbox.getPosition().y});
     if(hitbox.getPosition().x >= movement_range.x - hitbox.getSize().x)
