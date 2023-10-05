@@ -139,19 +139,18 @@ void Player::Event()
     if(hitbox.getPosition().y >= movement_range.y - hitbox.getSize().y)
 	SetPosition({this->hitbox.getPosition().x, movement_range.y - this->hitbox.getSize().y});
  }
-bool bulletHit(Bullet &bullet)
+bool Player::isbullethit(Bullet &bullet)
 {
-    return bullet.GetHitStatus() || bullet.getPosition().y < 0;
+    return bullet.GetHitStatus() || bullet.getPosition().x < 0 || bullet.getPosition().x > movement_range.x || bullet.getPosition().y < 0 || bullet.getPosition().y > movement_range.y;
 }
 void Player::Update()
 {
     crosshair.setPosition(sf::Vector2f(sf::Mouse::getPosition(*window)));
-    bullet_list.remove_if(bulletHit);
+    bullet_list.remove_if([this](Bullet bullet){return isbullethit(bullet);});
     for(auto bullet=bullet_list.begin(); bullet!=bullet_list.end(); bullet++)
     {
 	bullet->AddTime();
 	bullet->move(bullet->GetVelocity()*bullet->GetTime()*2.f);
-
     }
 }
 

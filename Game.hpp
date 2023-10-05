@@ -3,6 +3,7 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include "Scene.hpp"
+#include "Bullet.hpp"
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
 #include <cmath>
@@ -20,8 +21,12 @@ class Game : public sf::Drawable
         {
             // target.draw(scene, states);
             target.draw(player, states);
+            int counter = 0;
             for(auto enemy=enemy_list.begin(); enemy!=enemy_list.end(); enemy++)
+            {
+                counter++;
                 target.draw(*enemy, states);
+            }
         }
         Player player;
         Scene scene;
@@ -30,6 +35,7 @@ class Game : public sf::Drawable
         int respawn_time;
         sf::Vector2f window_size;
         std::list<Enemy> enemy_list;
+        std::list<Bullet> bullet_list;
         bool is_Collide(const sf::Shape &a, const sf::Shape &b);
         void create_Enemy();
 };

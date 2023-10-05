@@ -15,9 +15,9 @@ void Game::create_Enemy()
 {
     Enemy new_enemy;
     new_enemy.SetMovementRange(window_size);
-    new_enemy.SetPosition({window_size.x/2, 100});
-    int x_velocity = rand() % 4 - 2;
-    int y_velocity = rand() % 4 - 2;
+    new_enemy.SetPosition({(float)(rand()%(int)window_size.x), 100});
+    int x_velocity = rand() % 6 - 2;
+    int y_velocity = rand() % 6 - 2;
     if(x_velocity != 0 && y_velocity != 0)
     {
 	new_enemy.SetVelocity({(float)x_velocity,(float)y_velocity});
@@ -31,6 +31,7 @@ void Game::GeneralEvent()
     for(auto enemy = enemy_list.begin(); enemy!=enemy_list.end(); enemy++)
     {
 	enemy->Event();
+	enemy->FireBullet(player.GetHitbox().getPosition());
     }
     if(time > respawn_time)
     {
@@ -38,38 +39,44 @@ void Game::GeneralEvent()
 	enemy_respawn_clock = sf::Clock();
     }
 }
-bool hitEnemy(Enemy enemy)
-{
-    return enemy.IsHit();
-}
 void Game::CollisionEvent()
 {
-    enemy_list.remove_if(hitEnemy);
     for(auto enemy = enemy_list.begin(); enemy!=enemy_list.end(); enemy++)
     {
 	for(auto enemy_2 = std::next(enemy,1); enemy_2!=enemy_list.end(); enemy_2++)
-	    if(is_Collide(enemy->GetHitbox(), enemy_2->GetHitbox()))
+	    if(!enemy->IsHit() && !enemy_2->IsHit() && is_Collide(enemy->GetHitbox(), enemy_2->GetHitbox()))
 	    {
 		sf::Vector2f enemy_velocity;
 		enemy_velocity = enemy->GetVelcoity();
 		enemy->SetVelocity(enemy_2->GetVelcoity());
 		enemy_2->SetVelocity(enemy_velocity);
 	    }
-	if(is_Collide(player.GetHitbox(), enemy->GetHitbox()) || player.IsBulletHit(enemy->GetHitbox()))
+	if(!enemy->IsHit() && (is_Collide(player.GetHitbox(), enemy->GetHitbox())))
 	{
 	    enemy->SetHit(true);
+	    std::cout << "Taken Damage from hitbox.\n";
 	    if(respawn_time > 600)
 		respawn_time -= 100;
-		
 	}
+	if(!enemy->IsHit() && player.IsBulletHit(enemy->GetHitbox()))
+	{
+	    enemy->SetHit(true);
+	    std::cout << "Killed an enemy.\n";
+	}
+	if(enemy->IsBulletHit(player.GetHitbox()))
+	    std::cout << "Taken Damage from bullets.\n";
     }
+    enemy_list.remove_if([](Enemy enemy){return enemy.IsHit() && !enemy.BulletExist();});
 }
 
 void Game::Update()
 {
     player.Update();
     for(auto enemy = enemy_list.begin(); enemy!=enemy_list.end(); enemy++)
+    {
 	enemy->Update();
+    }
+
 }
 
 bool Game::is_Collide(const sf::Shape &a, const sf::Shape &b)

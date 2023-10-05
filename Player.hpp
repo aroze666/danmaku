@@ -29,8 +29,12 @@ class Player : public sf::Drawable
             target.draw(crosshair, states);
             target.draw(hitbox, states);
             for(auto it=bullet_list.begin(); it!=bullet_list.end(); it++)
+            {
                 target.draw(*it, states);
+            }
         }
+        
+        bool isbullethit(Bullet &bullet);
         sf::Vector2f terminal_velocity;
         sf::RectangleShape hitbox;
         sf::Vector2f bullet_size;
