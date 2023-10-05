@@ -5,6 +5,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <list>
 #include <iostream>
+#include <random>
 #include <cmath>
 #include "Bullet.hpp"
 class Player : public sf::Drawable
@@ -25,6 +26,7 @@ class Player : public sf::Drawable
     private:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
         {
+            target.draw(crosshair, states);
             target.draw(hitbox, states);
             for(auto it=bullet_list.begin(); it!=bullet_list.end(); it++)
                 target.draw(*it, states);
@@ -37,6 +39,9 @@ class Player : public sf::Drawable
         sf::Vector2f velocity;
         sf::Vector2f movement_range;
         sf::RenderWindow *window;
+        sf::CircleShape crosshair;
+        float firing_rate;
+        sf::Clock firing_counter;
         bool moving;
 };
 
