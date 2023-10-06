@@ -3,7 +3,7 @@
 Player::Player()
 {
     this->moving = false;
-    this->terminal_velocity = {10,10};
+    this->terminal_velocity = {8,8};
     this->hitbox.setSize({30,30});
     this->initial_velocity = {2,2};
     this->velocity = initial_velocity;
@@ -12,6 +12,7 @@ Player::Player()
     this->firing_cooldown = 100;
     this->crosshair.setFillColor(sf::Color::White);
     this->crosshair.setRadius(10);
+    speed_factor = 1;
 }
 void Player::SetHitboxSize(sf::Vector2f size)
 {
@@ -70,6 +71,9 @@ void Player::Event()
 	if(this->velocity.y <= terminal_velocity.y)
 	    this->velocity.y += std::abs(initial_velocity.y);
     }
+    speed_factor = 1;
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+	speed_factor = 0.25;
 
     if(velocity.x > 0)
 	velocity.x-=0.5;
@@ -97,9 +101,9 @@ void Player::Event()
 	    aim_direction = aim_direction / (float)std::sqrt(std::pow(aim_direction.x,2) + std::pow(aim_direction.y,2));
 	    float aim_offset = 0;
 	    if(rand()%100 > 50)
-		aim_offset = 0.05*(std::abs(this->velocity.x) + std::abs(this->velocity.y));
+		aim_offset = speed_factor*0.05*(std::abs(this->velocity.x) + std::abs(this->velocity.y));
 	    else
-		aim_offset = -0.05*(std::abs(this->velocity.x) + std::abs(this->velocity.y));
+		aim_offset = speed_factor*-0.05*(std::abs(this->velocity.x) + std::abs(this->velocity.y));
 	    if(moving){
 		//inaccurate
 		if(aim_direction.x < 0 && aim_direction.y < 0)
@@ -127,7 +131,7 @@ void Player::Event()
     }
     if(moving)
     {
-	this->hitbox.setPosition({this->hitbox.getPosition() + this->velocity});
+	this->hitbox.setPosition(this->hitbox.getPosition() + this->velocity*speed_factor);
     }
 
     if(hitbox.getPosition().x <= 0)
