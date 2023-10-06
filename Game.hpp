@@ -19,7 +19,7 @@ class Game : public sf::Drawable
     private:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
         {
-            // target.draw(scene, states);
+            target.draw(scene, states);
             target.draw(player, states);
             int counter = 0;
             for(auto enemy=enemy_list.begin(); enemy!=enemy_list.end(); enemy++)

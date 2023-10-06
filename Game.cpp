@@ -4,8 +4,8 @@ Game::Game(sf::RenderWindow &window)
 {
     srand(time(0));
     window_size = sf::Vector2f(window.getSize());
-    player.SetPosition({500,300});
-    player.SetMovementRange(window_size);
+    player.SetPosition({400,300});
+    player.SetMovementRange(scene.scene_size);
     player.SetWindow(&window);
     player.SetVelocity({3,3});
     this->respawn_time = 3000;
@@ -14,8 +14,8 @@ Game::Game(sf::RenderWindow &window)
 void Game::create_Enemy()
 {
     Enemy new_enemy;
-    new_enemy.SetMovementRange(window_size);
-    new_enemy.SetPosition({(float)(rand()%(int)window_size.x), 100});
+    new_enemy.SetMovementRange(scene.scene_size);
+    new_enemy.SetPosition({(float)(rand()%(int)scene.scene_size.x), 100});
     int x_velocity = rand() % 6 - 2;
     int y_velocity = rand() % 6 - 2;
     if(x_velocity != 0 && y_velocity != 0)

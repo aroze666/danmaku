@@ -7,6 +7,7 @@
 #include <iostream>
 #include <list>
 #include <cmath>
+#include "Scene.hpp"
 #include "Bullet.hpp"
 class Enemy : public sf::Drawable
 {

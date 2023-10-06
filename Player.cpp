@@ -154,7 +154,7 @@ void Player::Update()
     for(auto bullet=bullet_list.begin(); bullet!=bullet_list.end(); bullet++)
     {
 	bullet->AddTime();
-	bullet->move(bullet->GetVelocity()*bullet->GetTime()*2.f);
+	bullet->move(bullet->GetVelocity()*bullet->GetTime()*4.f);
     }
 }
 

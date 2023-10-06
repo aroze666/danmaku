@@ -1,20 +1,27 @@
 #ifndef __SCENE__
 #define __SCENE__
 #include <SFML/Graphics.hpp>
+#include <vector>
+struct Grid : public sf::RectangleShape
+{
+    bool wall = false;
+};
 class Scene : public sf::Drawable
 {
     public:
         Scene();
+        Scene(int *map);
         void Update();
+        sf::Vector2f scene_size = {512,512};
     private:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
         {
-            target.draw(background, states);
-            for(sf::CircleShape meteor : meteors)
-                target.draw(meteor, states);
+            
+            for(auto i=grids.begin(); i!=grids.end();i++)
+                target.draw(*i, states);
         }
-        sf::RectangleShape background;
-        sf::CircleShape meteors[5];
+        int *map;
+        std::vector<Grid> grids;
 };
 
 #endif
