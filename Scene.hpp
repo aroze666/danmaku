@@ -13,15 +13,15 @@ class Scene : public sf::Drawable
         Scene(int *map);
         void Update();
         sf::Vector2f scene_size = {512,512};
+        Grid grids[8][8];
     private:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
         {
             
-            for(auto i=grids.begin(); i!=grids.end();i++)
-                target.draw(*i, states);
+            for(int i = 0; i < 8; i++)
+                for(int j = 0; j < 8; j++)
+                    target.draw(grids[i][j], states);
         }
-        int *map;
-        std::vector<Grid> grids;
 };
 
 #endif

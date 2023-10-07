@@ -69,9 +69,11 @@ void Game::CollisionEvent()
     enemy_list.remove_if([](Enemy enemy){return enemy.IsHit() && !enemy.BulletExist();});
 }
 
+
 void Game::Update()
 {
     player.Update();
+    ray.Update(player.GetPlayerCenter(), player.GetPlayerAimVector(), scene);
     for(auto enemy = enemy_list.begin(); enemy!=enemy_list.end(); enemy++)
     {
 	enemy->Update();

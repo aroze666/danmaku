@@ -11,7 +11,7 @@ Player::Player()
     this->hitbox.setFillColor(sf::Color::Blue);
     this->firing_cooldown = 100;
     this->crosshair.setFillColor(sf::Color::White);
-    this->crosshair.setRadius(10);
+    this->crosshair.setRadius(5);
     speed_factor = 1;
 }
 void Player::SetHitboxSize(sf::Vector2f size)
@@ -93,12 +93,9 @@ void Player::Event()
 	{
 	    Bullet new_bullet;
 	    new_bullet.setSize(bullet_size);
-	    sf::Vector2f center={hitbox.getPosition().x+(hitbox.getSize().x/2)-new_bullet.getSize().x/2,hitbox.getPosition().y+(hitbox.getSize().y/2)-new_bullet.getSize().y/2};
 	    new_bullet.setFillColor(sf::Color::Cyan);
-	    new_bullet.setPosition(center);
-	    sf::Vector2f mouse_pos = sf::Vector2f(sf::Mouse::getPosition(*window));
-	    sf::Vector2f aim_direction = mouse_pos - center;
-	    aim_direction = aim_direction / (float)std::sqrt(std::pow(aim_direction.x,2) + std::pow(aim_direction.y,2));
+	    new_bullet.setPosition(GetPlayerCenter());
+	    sf::Vector2f aim_direction = GetPlayerAimVector();
 	    float aim_offset = 0;
 	    if(rand()%100 > 50)
 		aim_offset = speed_factor*0.05*(std::abs(this->velocity.x) + std::abs(this->velocity.y));
@@ -111,7 +108,7 @@ void Player::Event()
 		else if(aim_direction.x > 0 && aim_direction.y > 0)
 		    new_bullet.SetVelocity({aim_direction.x - aim_offset, aim_direction.y + aim_offset});
 		else
-		new_bullet.SetVelocity({aim_direction.x + aim_offset, aim_direction.y + aim_offset});
+		    new_bullet.SetVelocity({aim_direction.x + aim_offset, aim_direction.y + aim_offset});
 	    }else
 	    {	
 		//accurate
@@ -142,19 +139,33 @@ void Player::Event()
 	SetPosition({this->hitbox.getPosition().x, 0});
     if(hitbox.getPosition().y >= movement_range.y - hitbox.getSize().y)
 	SetPosition({this->hitbox.getPosition().x, movement_range.y - this->hitbox.getSize().y});
- }
+}
+
+sf::Vector2f Player::GetPlayerCenter()
+{
+    return {hitbox.getPosition().x+(hitbox.getSize().x/2),hitbox.getPosition().y+(hitbox.getSize().y/2)};
+}
 bool Player::isbullethit(Bullet &bullet)
 {
     return bullet.GetHitStatus() || bullet.getPosition().x < 0 || bullet.getPosition().x > movement_range.x || bullet.getPosition().y < 0 || bullet.getPosition().y > movement_range.y;
 }
+sf::Vector2f Player::GetPlayerAimVector()
+{
+    sf::Vector2f mouse_pos =sf::Vector2f(sf::Mouse::getPosition(*window));
+    sf::Vector2f aim_direction = mouse_pos - GetPlayerCenter();
+    aim_direction = aim_direction / (float)std::sqrt(std::pow(aim_direction.x,2) + std::pow(aim_direction.y,2));
+    return aim_direction;
+}
 void Player::Update()
 {
-    crosshair.setPosition(sf::Vector2f(sf::Mouse::getPosition(*window)));
+    sf::Vector2f mouse_pos = {sf::Mouse::getPosition(*window).x - crosshair.getRadius(),sf::Mouse::getPosition(*window).y - crosshair.getRadius()};
+    crosshair.setPosition(mouse_pos);
     bullet_list.remove_if([this](Bullet bullet){return isbullethit(bullet);});
     for(auto bullet=bullet_list.begin(); bullet!=bullet_list.end(); bullet++)
     {
 	bullet->AddTime();
 	bullet->move(bullet->GetVelocity()*bullet->GetTime()*4.f);
     }
+
 }
 

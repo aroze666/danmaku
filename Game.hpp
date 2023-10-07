@@ -4,6 +4,7 @@
 #include "Enemy.hpp"
 #include "Scene.hpp"
 #include "Bullet.hpp"
+#include "Raycaster.hpp"
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
 #include <cmath>
@@ -21,6 +22,7 @@ class Game : public sf::Drawable
         {
             target.draw(scene, states);
             target.draw(player, states);
+            target.draw(ray, states);
             int counter = 0;
             for(auto enemy=enemy_list.begin(); enemy!=enemy_list.end(); enemy++)
             {
@@ -30,6 +32,7 @@ class Game : public sf::Drawable
         }
         Player player;
         Scene scene;
+        RayCaster ray;
         sf::RenderWindow window;
         sf::Clock enemy_respawn_clock;
         int respawn_time;

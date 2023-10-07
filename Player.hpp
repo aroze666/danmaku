@@ -19,8 +19,10 @@ class Player : public sf::Drawable
         void SetPosition(sf::Vector2f position);
         void SetVelocity(sf::Vector2f velocity);
         bool IsBulletHit(const sf::Shape &object);
+        sf::Vector2f GetPlayerAimVector();
         void SetWindow(sf::RenderWindow *window){this->window = window;}
         void SetMovementRange(sf::Vector2f range){movement_range = range;}
+        sf::Vector2f GetPlayerCenter();
         sf::Vector2f GetVelocity(){return velocity;}
         sf::RectangleShape GetHitbox();
     private:
