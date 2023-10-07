@@ -1,2 +1,2 @@
 # danmaku
-2D Shooting Game in SFML
+Shooting Game in SFML
