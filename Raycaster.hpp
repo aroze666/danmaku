@@ -5,15 +5,20 @@
 #include <cmath>
 #include "Scene.hpp"
 #define grid_size 64
+#define PI 3.1415926
+struct Ray : public sf::RectangleShape
+{
+    float angle;
+};
 class RayCaster : public sf::Drawable
 {
     public:
-    RayCaster()
+    RayCaster(int number)
     {
-        number_of_rays = 90;
+        number_of_rays = number;
         for(int i = 0; i<number_of_rays;i++)
         {
-            sf::RectangleShape new_ray;
+            Ray new_ray;
             new_ray.setFillColor(sf::Color::Magenta);
             rays.push_back(new_ray);
         }
@@ -22,19 +27,22 @@ class RayCaster : public sf::Drawable
     {
         sf::Vector2f direction = aim_direction;
         float angle = std::atan(direction.y/direction.x);
-        angle -= 3.1415026/4;
         if(direction.x < 0)
         {
-            angle += 3.1415926;
+            angle += PI;
         }
+        player_angle = angle;
+        angle -= ((float)number_of_rays)/2*PI/180;
         direction.x = std::cos(angle);
         direction.y = std::sin(angle);
+        std::cout << player_angle << " " << angle << "\n";
         for(int i = 0; i<rays.size(); i++)
         {
+            rays[i].angle = angle;
             sf::Vector2f d = {(float)std::sqrt(1+std::pow(direction.y/direction.x,2)), (float)std::sqrt(1+std::pow(direction.x/direction.y,2))};
             sf::Vector2f grid_start = position;
-            grid_start.x = grid_start.x/64.f;
-            grid_start.y = grid_start.y/64.f;
+            grid_start.x = grid_start.x/grid_size;
+            grid_start.y = grid_start.y/grid_size;
             sf::Vector2i grid_map;
             sf::Vector2i step;
             sf::Vector2f distance;
@@ -43,21 +51,21 @@ class RayCaster : public sf::Drawable
             if(direction.x < 0)
             {
                 step.x = -1;
-                distance.x = 64*(grid_start.x - (float)grid_map.x)*d.x;
+                distance.x = grid_size*(grid_start.x - (float)grid_map.x)*d.x;
             }else if(direction.x > 0)
             {
                 step.x = 1;
-                distance.x = 64*((float)(grid_map.x+1) - grid_start.x)*d.x;
+                distance.x = grid_size*((float)(grid_map.x+1) - grid_start.x)*d.x;
             }
             if(direction.y < 0)
             {
                 step.y = -1;
-                distance.y = 64*(grid_start.y - (float)grid_map.y)*d.y;
+                distance.y = grid_size*(grid_start.y - (float)grid_map.y)*d.y;
 
             }else if(direction.y >0)
             {
                 step.y = 1;
-                distance.y = 64*((float)(grid_map.y+1) - grid_start.y)* d.y;
+                distance.y = grid_size*((float)(grid_map.y+1) - grid_start.y)* d.y;
             }
             while(true)
             {
@@ -67,24 +75,23 @@ class RayCaster : public sf::Drawable
                 {
                     grid_map.y += step.y;
                     if(!scene.grids[grid_map.y][grid_map.x].wall)
-                        distance.y += 64*d.y;
+                        distance.y += grid_size*d.y;
                 }else{
                     grid_map.x += step.x;
                     if(!scene.grids[grid_map.y][grid_map.x].wall)
-                        distance.x += 64*d.x;
+                        distance.x += grid_size*d.x;
                 }
             }
-
             if(distance.x < distance.y)
                 rays[i].setSize({distance.x, 1});
             else
                 rays[i].setSize({distance.y, 1});
             rays[i].setPosition(position);
             if(direction.x < 0)
-                rays[i].setRotation(180+std::atan(direction.y/direction.x)*180/3.1415926);
+                rays[i].setRotation(180+std::atan(direction.y/direction.x)*180/PI);
             else
-                rays[i].setRotation(std::atan(direction.y/direction.x)*180/3.1415926);
-            angle += 3.1415026/180;
+                rays[i].setRotation(std::atan(direction.y/direction.x)*180/PI);
+            angle += PI/180; 
             direction.x = std::cos(angle);
             direction.y = std::sin(angle);
         }
@@ -93,10 +100,19 @@ class RayCaster : public sf::Drawable
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         for(int i = 0; i<rays.size(); i++)
+        {
+            sf::RectangleShape box;
+            box.setFillColor(sf::Color::White);
+            float line_height = 64*512/rays[i].getSize().x/std::cos(player_angle - rays[i].angle);
+            box.setPosition({0+8.f*i, 1024-line_height/2 - 256});
+            box.setSize({8, line_height});
+            target.draw(box, states);
             target.draw(rays[i], states);
+        }
     }
+    float player_angle;
     int number_of_rays;
-    std::vector<sf::RectangleShape> rays;
+    std::vector<Ray> rays;
 };
 
 #endif

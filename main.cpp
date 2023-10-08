@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "Game.hpp"
 int main (int argc, char *argv[]) {
-    sf::RenderWindow window(sf::VideoMode(800,800), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(1024,1024), "SFML works!");
     window.setFramerateLimit(60);
     // window.setMouseCursorVisible(false);
     Game game(window);
