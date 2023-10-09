@@ -9,6 +9,7 @@
 struct Ray : public sf::RectangleShape
 {
     float angle;
+    bool direct_hit = false;
 };
 class RayCaster : public sf::Drawable
 {
@@ -35,7 +36,6 @@ class RayCaster : public sf::Drawable
         angle -= ((float)number_of_rays)/2*PI/180;
         direction.x = std::cos(angle);
         direction.y = std::sin(angle);
-        std::cout << player_angle << " " << angle << "\n";
         for(int i = 0; i<rays.size(); i++)
         {
             rays[i].angle = angle;
@@ -83,9 +83,15 @@ class RayCaster : public sf::Drawable
                 }
             }
             if(distance.x < distance.y)
+            {
                 rays[i].setSize({distance.x, 1});
+                rays[i].direct_hit = false;
+            }
             else
+            {
                 rays[i].setSize({distance.y, 1});
+                rays[i].direct_hit = true;
+            }
             rays[i].setPosition(position);
             if(direction.x < 0)
                 rays[i].setRotation(180+std::atan(direction.y/direction.x)*180/PI);
@@ -102,7 +108,10 @@ class RayCaster : public sf::Drawable
         for(int i = 0; i<rays.size(); i++)
         {
             sf::RectangleShape box;
-            box.setFillColor(sf::Color::White);
+            if(rays[i].direct_hit)
+                box.setFillColor(sf::Color(255,255,255,255));
+            else
+                box.setFillColor(sf::Color(180,180,180,255));
             float line_height = 64*512/rays[i].getSize().x/std::cos(player_angle - rays[i].angle);
             box.setPosition({0+8.f*i, 1024-line_height/2 - 256});
             box.setSize({8, line_height});

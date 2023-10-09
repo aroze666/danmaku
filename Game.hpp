@@ -32,7 +32,7 @@ class Game : public sf::Drawable
         }
         Player player;
         Scene scene;
-        RayCaster ray{90};
+        RayCaster ray{70};
         sf::RenderWindow window;
         sf::Clock enemy_respawn_clock;
         int respawn_time;
