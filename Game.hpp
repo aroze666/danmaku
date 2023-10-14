@@ -3,7 +3,6 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include "Bullet.hpp"
-#include "Menu.hpp"
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
 #include <cmath>
@@ -20,22 +19,15 @@ public:
 private:
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const
     {
-        if (display_menu)
-            target.draw(menu, states);
-        else
+        target.draw(player, states);
+        int counter = 0;
+        for (auto enemy = enemy_list.begin(); enemy != enemy_list.end(); enemy++)
         {
-            target.draw(player, states);
-            int counter = 0;
-            for (auto enemy = enemy_list.begin(); enemy != enemy_list.end(); enemy++)
-            {
-                counter++;
-                target.draw(*enemy, states);
-            }
+            counter++;
+            target.draw(*enemy, states);
         }
     }
-    bool display_menu;
     Player player;
-    Menu menu;
     sf::RenderWindow window;
     sf::Clock enemy_respawn_clock;
     int respawn_time;
