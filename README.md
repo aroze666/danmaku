@@ -5,6 +5,7 @@ A simple 2D Shooting Game written in SFML framework.
 Game mechanics:
 - 360 aiming
 - movement inertia
+- dodging bullets
 - collisions
 - aiming inaccuracy punished by movement
 - slow walking
